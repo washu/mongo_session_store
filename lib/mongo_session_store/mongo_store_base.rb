@@ -12,8 +12,14 @@ module ActionDispatch
       def self.session_class
         self::Session
       end
-            
+
+      def send(*args)
+        p args
+        super.tap { |result| puts "#{args.first}: #{result.inspect}" }
+      end
+
       private
+
         def session_class
           self.class.session_class
         end
