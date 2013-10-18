@@ -32,11 +32,11 @@ module ActionDispatch
 
         def set_session(env, sid, session_data, options = {})
           record = get_session_model(env, sid)
-          record.data = pack(session_data)
+          # Use and atomic set of the session, soa replicaset with secondary reads works as expected.
+          record.set(data:pack(session_data),updated_at:Time.now.utc) ? sid: false
           # Rack spec dictates that set_session should return true or false
           # depending on whether or not the session was saved or not.
           # However, ActionPack seems to want a session id instead.
-          record.save ? sid : false
         end
 
         def find_session(id)
